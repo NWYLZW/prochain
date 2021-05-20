@@ -20,6 +20,11 @@ describe('simple', async () => {
       return this
     }
 
+    async addBaz() {
+      this.baz += 1
+      return this
+    }
+
     /** property */
     baz = 3
 
@@ -29,16 +34,21 @@ describe('simple', async () => {
     }
   }
 
-  it('basic support', async () => {
+  it('basic support.', async () => {
     const a = wrap(new A())
     await expect(a.foo().bar().foo().bar().bar().qux).to.eventually.equal(3)
     expect(output).to.equal('12122')
   })
 
-  it('property support', async () => {
+  it('property support.', async () => {
     const originA = new A()
     const a = wrap(originA)
-    a.baz = 1
+    originA.baz = 1
     expect(originA.baz).to.equal(1)
+  })
+
+  it('should change property by async method.', async () => {
+    const a = wrap(new A())
+    await expect(a.addBaz().addBaz().baz).to.eventually.equal(5)
   })
 })
